@@ -53,6 +53,24 @@ public class BenhNhanDAO {
         return false;
     }
 
+    public boolean update(BenhNhan obj) {
+        String sql = "UPDATE BenhNhan SET CMND=?, GioiTinh=?, NgaySinh=?, DiaChi=?, NgayDangKy=?, MaBacSy=? WHERE MaSo=?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, obj.getCmnd());
+            ps.setString(2, obj.getGioiTinh());
+            ps.setDate(3, obj.getNgaySinh() != null ? new Date(obj.getNgaySinh().getTime()) : null);
+            ps.setString(4, obj.getDiaChi());
+            ps.setDate(5, obj.getNgayDangKy() != null ? new Date(obj.getNgayDangKy().getTime()) : null);
+            ps.setString(6, obj.getMaBacSy());
+            ps.setString(7, obj.getMaSo());
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public boolean delete(String maSo) {
         String sql = "DELETE FROM BenhNhan WHERE MaSo=?";
         try (Connection conn = DatabaseConnection.getConnection();
