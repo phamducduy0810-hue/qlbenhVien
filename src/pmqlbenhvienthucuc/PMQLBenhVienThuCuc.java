@@ -14,7 +14,11 @@ public class PMQLBenhVienThuCuc {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+        // Run main frame
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new gui.FrmMain().setVisible(true);
+            }
+        });
     }
-    
 }
