@@ -1,9 +1,8 @@
 package model;
 
 public class NhanVien {
-    private String maNV;
+    private String maSo;
     private String cmnd;
-    private String hoTen;
     private String gioiTinh;
     private java.util.Date ngaySinh;
     private String diaChi;
@@ -13,10 +12,9 @@ public class NhanVien {
 
     public NhanVien() {}
 
-    public NhanVien(String maNV, String cmnd, String hoTen, String gioiTinh, java.util.Date ngaySinh, String diaChi, java.util.Date ngayTuyenDung, String chucDanh, String maKhoa) {
-        this.maNV = maNV;
+    public NhanVien(String maSo, String cmnd, String gioiTinh, java.util.Date ngaySinh, String diaChi, java.util.Date ngayTuyenDung, String chucDanh, String maKhoa) {
+        this.maSo = maSo;
         this.cmnd = cmnd;
-        this.hoTen = hoTen;
         this.gioiTinh = gioiTinh;
         this.ngaySinh = ngaySinh;
         this.diaChi = diaChi;
@@ -25,12 +23,12 @@ public class NhanVien {
         this.maKhoa = maKhoa;
     }
 
-    public String getMaNV() {
-        return maNV;
+    public String getMaSo() {
+        return maSo;
     }
 
-    public void setMaNV(String maNV) {
-        this.maNV = maNV;
+    public void setMaSo(String maSo) {
+        this.maSo = maSo;
     }
     public String getCmnd() {
         return cmnd;
@@ -38,13 +36,6 @@ public class NhanVien {
 
     public void setCmnd(String cmnd) {
         this.cmnd = cmnd;
-    }
-    public String getHoTen() {
-        return hoTen;
-    }
-
-    public void setHoTen(String hoTen) {
-        this.hoTen = hoTen;
     }
     public String getGioiTinh() {
         return gioiTinh;

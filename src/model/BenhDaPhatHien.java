@@ -2,19 +2,17 @@ package model;
 
 public class BenhDaPhatHien {
     private int maBenh;
-    private String maBN;
+    private String maBenhNhan;
     private String tenBenh;
     private java.util.Date ngayPhatHien;
-    private String ghiChu;
 
     public BenhDaPhatHien() {}
 
-    public BenhDaPhatHien(int maBenh, String maBN, String tenBenh, java.util.Date ngayPhatHien, String ghiChu) {
+    public BenhDaPhatHien(int maBenh, String maBenhNhan, String tenBenh, java.util.Date ngayPhatHien) {
         this.maBenh = maBenh;
-        this.maBN = maBN;
+        this.maBenhNhan = maBenhNhan;
         this.tenBenh = tenBenh;
         this.ngayPhatHien = ngayPhatHien;
-        this.ghiChu = ghiChu;
     }
 
     public int getMaBenh() {
@@ -24,12 +22,12 @@ public class BenhDaPhatHien {
     public void setMaBenh(int maBenh) {
         this.maBenh = maBenh;
     }
-    public String getMaBN() {
-        return maBN;
+    public String getMaBenhNhan() {
+        return maBenhNhan;
     }
 
-    public void setMaBN(String maBN) {
-        this.maBN = maBN;
+    public void setMaBenhNhan(String maBenhNhan) {
+        this.maBenhNhan = maBenhNhan;
     }
     public String getTenBenh() {
         return tenBenh;
@@ -44,12 +42,5 @@ public class BenhDaPhatHien {
 
     public void setNgayPhatHien(java.util.Date ngayPhatHien) {
         this.ngayPhatHien = ngayPhatHien;
-    }
-    public String getGhiChu() {
-        return ghiChu;
-    }
-
-    public void setGhiChu(String ghiChu) {
-        this.ghiChu = ghiChu;
     }
 }

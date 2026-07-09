@@ -1,24 +1,24 @@
 package model;
 
 public class Phong {
-    private String maPhong;
+    private String soPhong;
     private String tenPhong;
     private String maKhoa;
 
     public Phong() {}
 
-    public Phong(String maPhong, String tenPhong, String maKhoa) {
-        this.maPhong = maPhong;
+    public Phong(String soPhong, String tenPhong, String maKhoa) {
+        this.soPhong = soPhong;
         this.tenPhong = tenPhong;
         this.maKhoa = maKhoa;
     }
 
-    public String getMaPhong() {
-        return maPhong;
+    public String getSoPhong() {
+        return soPhong;
     }
 
-    public void setMaPhong(String maPhong) {
-        this.maPhong = maPhong;
+    public void setSoPhong(String soPhong) {
+        this.soPhong = soPhong;
     }
     public String getTenPhong() {
         return tenPhong;

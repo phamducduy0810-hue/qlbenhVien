@@ -2,21 +2,19 @@ package model;
 
 public class PhieuNhapVien {
     private int maPhieu;
-    private String maBN;
-    private String maGiuong;
+    private String maBenhNhan;
+    private String soGiuong;
     private java.util.Date ngayNhan;
     private java.util.Date ngayTra;
-    private String ghiChu;
 
     public PhieuNhapVien() {}
 
-    public PhieuNhapVien(int maPhieu, String maBN, String maGiuong, java.util.Date ngayNhan, java.util.Date ngayTra, String ghiChu) {
+    public PhieuNhapVien(int maPhieu, String maBenhNhan, String soGiuong, java.util.Date ngayNhan, java.util.Date ngayTra) {
         this.maPhieu = maPhieu;
-        this.maBN = maBN;
-        this.maGiuong = maGiuong;
+        this.maBenhNhan = maBenhNhan;
+        this.soGiuong = soGiuong;
         this.ngayNhan = ngayNhan;
         this.ngayTra = ngayTra;
-        this.ghiChu = ghiChu;
     }
 
     public int getMaPhieu() {
@@ -26,19 +24,19 @@ public class PhieuNhapVien {
     public void setMaPhieu(int maPhieu) {
         this.maPhieu = maPhieu;
     }
-    public String getMaBN() {
-        return maBN;
+    public String getMaBenhNhan() {
+        return maBenhNhan;
     }
 
-    public void setMaBN(String maBN) {
-        this.maBN = maBN;
+    public void setMaBenhNhan(String maBenhNhan) {
+        this.maBenhNhan = maBenhNhan;
     }
-    public String getMaGiuong() {
-        return maGiuong;
+    public String getSoGiuong() {
+        return soGiuong;
     }
 
-    public void setMaGiuong(String maGiuong) {
-        this.maGiuong = maGiuong;
+    public void setSoGiuong(String soGiuong) {
+        this.soGiuong = soGiuong;
     }
     public java.util.Date getNgayNhan() {
         return ngayNhan;
@@ -53,12 +51,5 @@ public class PhieuNhapVien {
 
     public void setNgayTra(java.util.Date ngayTra) {
         this.ngayTra = ngayTra;
-    }
-    public String getGhiChu() {
-        return ghiChu;
-    }
-
-    public void setGhiChu(String ghiChu) {
-        this.ghiChu = ghiChu;
     }
 }

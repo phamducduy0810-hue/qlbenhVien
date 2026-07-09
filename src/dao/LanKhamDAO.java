@@ -7,8 +7,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import model.LanKham;
+import java.sql.Date;
 import java.sql.Timestamp;
+import model.LanKham;
 
 public class LanKhamDAO {
 
@@ -19,13 +20,13 @@ public class LanKhamDAO {
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
-                LanKham lk = new LanKham();
-                lk.setMaLanKham(rs.getInt("MaLanKham"));
-                lk.setMaBN(rs.getString("MaBN"));
-                lk.setMaBS(rs.getString("MaBS"));
-                lk.setNgayGioKham(rs.getTimestamp("NgayGioKham"));
-                lk.setKetLuan(rs.getString("KetLuan"));
-                list.add(lk);
+                LanKham obj = new LanKham();
+                obj.setMaLanKham(rs.getInt("MaLanKham"));
+                obj.setMaBenhNhan(rs.getString("MaBenhNhan"));
+                obj.setMaBacSy(rs.getString("MaBacSy"));
+                obj.setThoiDiemKham(rs.getTimestamp("ThoiDiemKham"));
+                obj.setKetLuan(rs.getString("KetLuan"));
+                list.add(obj);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -33,30 +34,14 @@ public class LanKhamDAO {
         return list;
     }
 
-    public boolean insert(LanKham lk) {
-        String sql = "INSERT INTO LanKham(MaBN, MaBS, NgayGioKham, KetLuan) VALUES (?, ?, ?, ?)";
+    public boolean insert(LanKham obj) {
+        String sql = "INSERT INTO LanKham(MaBenhNhan, MaBacSy, ThoiDiemKham, KetLuan) VALUES (?, ?, ?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, lk.getMaBN());
-            ps.setString(2, lk.getMaBS());
-            ps.setTimestamp(3, lk.getNgayGioKham() != null ? new Timestamp(lk.getNgayGioKham().getTime()) : null);
-            ps.setString(4, lk.getKetLuan());
-            return ps.executeUpdate() > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    public boolean update(LanKham lk) {
-        String sql = "UPDATE LanKham SET MaBN=?, MaBS=?, NgayGioKham=?, KetLuan=? WHERE MaLanKham=?";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, lk.getMaBN());
-            ps.setString(2, lk.getMaBS());
-            ps.setTimestamp(3, lk.getNgayGioKham() != null ? new Timestamp(lk.getNgayGioKham().getTime()) : null);
-            ps.setString(4, lk.getKetLuan());
-            ps.setInt(5, lk.getMaLanKham());
+            ps.setString(1, obj.getMaBenhNhan());
+            ps.setString(2, obj.getMaBacSy());
+            ps.setTimestamp(3, obj.getThoiDiemKham() != null ? new Timestamp(obj.getThoiDiemKham().getTime()) : null);
+            ps.setString(4, obj.getKetLuan());
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();

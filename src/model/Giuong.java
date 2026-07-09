@@ -1,46 +1,28 @@
 package model;
 
 public class Giuong {
-    private String maGiuong;
-    private int soGiuong;
-    private String maPhong;
-    private String trangThai;
+    private String soGiuong;
+    private String soPhong;
 
     public Giuong() {}
 
-    public Giuong(String maGiuong, int soGiuong, String maPhong, String trangThai) {
-        this.maGiuong = maGiuong;
+    public Giuong(String soGiuong, String soPhong) {
         this.soGiuong = soGiuong;
-        this.maPhong = maPhong;
-        this.trangThai = trangThai;
+        this.soPhong = soPhong;
     }
 
-    public String getMaGiuong() {
-        return maGiuong;
-    }
-
-    public void setMaGiuong(String maGiuong) {
-        this.maGiuong = maGiuong;
-    }
-    public int getSoGiuong() {
+    public String getSoGiuong() {
         return soGiuong;
     }
 
-    public void setSoGiuong(int soGiuong) {
+    public void setSoGiuong(String soGiuong) {
         this.soGiuong = soGiuong;
     }
-    public String getMaPhong() {
-        return maPhong;
+    public String getSoPhong() {
+        return soPhong;
     }
 
-    public void setMaPhong(String maPhong) {
-        this.maPhong = maPhong;
-    }
-    public String getTrangThai() {
-        return trangThai;
-    }
-
-    public void setTrangThai(String trangThai) {
-        this.trangThai = trangThai;
+    public void setSoPhong(String soPhong) {
+        this.soPhong = soPhong;
     }
 }

@@ -1,26 +1,35 @@
 package model;
 
 public class BacSy {
-    private String maBS;
+    private String maSo;
+    private String dienThoai;
     private String chuyenNganh;
     private String kyNang;
     private String lichLamViec;
 
     public BacSy() {}
 
-    public BacSy(String maBS, String chuyenNganh, String kyNang, String lichLamViec) {
-        this.maBS = maBS;
+    public BacSy(String maSo, String dienThoai, String chuyenNganh, String kyNang, String lichLamViec) {
+        this.maSo = maSo;
+        this.dienThoai = dienThoai;
         this.chuyenNganh = chuyenNganh;
         this.kyNang = kyNang;
         this.lichLamViec = lichLamViec;
     }
 
-    public String getMaBS() {
-        return maBS;
+    public String getMaSo() {
+        return maSo;
     }
 
-    public void setMaBS(String maBS) {
-        this.maBS = maBS;
+    public void setMaSo(String maSo) {
+        this.maSo = maSo;
+    }
+    public String getDienThoai() {
+        return dienThoai;
+    }
+
+    public void setDienThoai(String dienThoai) {
+        this.dienThoai = dienThoai;
     }
     public String getChuyenNganh() {
         return chuyenNganh;

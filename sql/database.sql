@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS BenhDaPhatHien (
 
 -- Bảng Phòng (phòng thuộc khoa)
 CREATE TABLE IF NOT EXISTS Phong (
-    MaPhong VARCHAR(50) PRIMARY KEY,
+    SoPhong VARCHAR(50) PRIMARY KEY,
     TenPhong VARCHAR(255) NOT NULL,
     MaKhoa VARCHAR(50),
     FOREIGN KEY (MaKhoa) REFERENCES KhoaDieuTri(MaKhoa)
@@ -73,9 +73,9 @@ CREATE TABLE IF NOT EXISTS Phong (
 CREATE TABLE IF NOT EXISTS Giuong (
     MaGiuong VARCHAR(50) PRIMARY KEY,
     SoGiuong INT NOT NULL,
-    MaPhong VARCHAR(50) NOT NULL,
+    SoPhong VARCHAR(50) NOT NULL,
     TrangThai VARCHAR(50) DEFAULT 'Trong', -- Trong, DaCoNguoi
-    FOREIGN KEY (MaPhong) REFERENCES Phong(MaPhong)
+    FOREIGN KEY (SoPhong) REFERENCES Phong(SoPhong)
 );
 
 -- Bảng Lần Khám (Bác sỹ khám cho Bệnh nhân)

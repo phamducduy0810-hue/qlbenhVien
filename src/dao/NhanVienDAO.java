@@ -7,8 +7,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import model.NhanVien;
 import java.sql.Date;
+import java.sql.Timestamp;
+import model.NhanVien;
 
 public class NhanVienDAO {
 
@@ -19,17 +20,16 @@ public class NhanVienDAO {
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
-                NhanVien nv = new NhanVien();
-                nv.setMaNV(rs.getString("MaNV"));
-                nv.setCmnd(rs.getString("CMND"));
-                nv.setHoTen(rs.getString("HoTen"));
-                nv.setGioiTinh(rs.getString("GioiTinh"));
-                nv.setNgaySinh(rs.getDate("NgaySinh"));
-                nv.setDiaChi(rs.getString("DiaChi"));
-                nv.setNgayTuyenDung(rs.getDate("NgayTuyenDung"));
-                nv.setChucDanh(rs.getString("ChucDanh"));
-                nv.setMaKhoa(rs.getString("MaKhoa"));
-                list.add(nv);
+                NhanVien obj = new NhanVien();
+                obj.setMaSo(rs.getString("MaSo"));
+                obj.setCmnd(rs.getString("CMND"));
+                obj.setGioiTinh(rs.getString("GioiTinh"));
+                obj.setNgaySinh(rs.getDate("NgaySinh"));
+                obj.setDiaChi(rs.getString("DiaChi"));
+                obj.setNgayTuyenDung(rs.getDate("NgayTuyenDung"));
+                obj.setChucDanh(rs.getString("ChucDanh"));
+                obj.setMaKhoa(rs.getString("MaKhoa"));
+                list.add(obj);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -37,19 +37,18 @@ public class NhanVienDAO {
         return list;
     }
 
-    public boolean insert(NhanVien nv) {
-        String sql = "INSERT INTO NhanVien(MaNV, CMND, HoTen, GioiTinh, NgaySinh, DiaChi, NgayTuyenDung, ChucDanh, MaKhoa) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public boolean insert(NhanVien obj) {
+        String sql = "INSERT INTO NhanVien(MaSo, CMND, GioiTinh, NgaySinh, DiaChi, NgayTuyenDung, ChucDanh, MaKhoa) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, nv.getMaNV());
-            ps.setString(2, nv.getCmnd());
-            ps.setString(3, nv.getHoTen());
-            ps.setString(4, nv.getGioiTinh());
-            ps.setDate(5, nv.getNgaySinh() != null ? new Date(nv.getNgaySinh().getTime()) : null);
-            ps.setString(6, nv.getDiaChi());
-            ps.setDate(7, nv.getNgayTuyenDung() != null ? new Date(nv.getNgayTuyenDung().getTime()) : null);
-            ps.setString(8, nv.getChucDanh());
-            ps.setString(9, nv.getMaKhoa());
+            ps.setString(1, obj.getMaSo());
+            ps.setString(2, obj.getCmnd());
+            ps.setString(3, obj.getGioiTinh());
+            ps.setDate(4, obj.getNgaySinh() != null ? new Date(obj.getNgaySinh().getTime()) : null);
+            ps.setString(5, obj.getDiaChi());
+            ps.setDate(6, obj.getNgayTuyenDung() != null ? new Date(obj.getNgayTuyenDung().getTime()) : null);
+            ps.setString(7, obj.getChucDanh());
+            ps.setString(8, obj.getMaKhoa());
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -57,31 +56,11 @@ public class NhanVienDAO {
         return false;
     }
 
-    public boolean update(NhanVien nv) {
-        String sql = "UPDATE NhanVien SET CMND=?, HoTen=?, GioiTinh=?, NgaySinh=?, DiaChi=?, NgayTuyenDung=?, ChucDanh=?, MaKhoa=? WHERE MaNV=?";
+    public boolean delete(String maSo) {
+        String sql = "DELETE FROM NhanVien WHERE MaSo=?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, nv.getCmnd());
-            ps.setString(2, nv.getHoTen());
-            ps.setString(3, nv.getGioiTinh());
-            ps.setDate(4, nv.getNgaySinh() != null ? new Date(nv.getNgaySinh().getTime()) : null);
-            ps.setString(5, nv.getDiaChi());
-            ps.setDate(6, nv.getNgayTuyenDung() != null ? new Date(nv.getNgayTuyenDung().getTime()) : null);
-            ps.setString(7, nv.getChucDanh());
-            ps.setString(8, nv.getMaKhoa());
-            ps.setString(9, nv.getMaNV());
-            return ps.executeUpdate() > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    public boolean delete(String maNV) {
-        String sql = "DELETE FROM NhanVien WHERE MaNV=?";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, maNV);
+            ps.setString(1, maSo);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
