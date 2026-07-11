@@ -1,73 +1,317 @@
 package gui;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.geom.RoundRectangle2D;
 
 public class FrmMain extends JFrame {
+    private JPanel pnlCard;
+    private CardLayout cardLayout;
+
+    // Bảng màu rực rỡ và chuyên nghiệp hơn
+    private final Color COLOR_BG = new Color(240, 244, 248); // Nền xám nhạt hơi xanh (Background)
+    private final Color COLOR_SIDEBAR = new Color(26, 35, 45); // Nền Sidebar (Xanh đen đậm)
+    private final Color COLOR_PRIMARY = new Color(0, 168, 107); // Xanh ngọc CTA
+    private final Color COLOR_SIDEBAR_TEXT = new Color(220, 225, 230); // Chữ Sidebar trắng nhạt
+    private final Color COLOR_HOVER = new Color(40, 53, 67); // Hover trên Sidebar
+    
+    // Màu cho khu vực nội dung
+    private final Color COLOR_CONTENT_TEXT_DARK = new Color(44, 62, 80);
+    private final Color COLOR_CONTENT_TEXT_MUTED = new Color(127, 140, 141);
+
+    private SidebarItem activeItem = null;
+
     public FrmMain() {
         setTitle("Hệ Thống Quản Lý Bệnh Viện Đa Khoa Thu Cúc");
-        setSize(900, 650);
+        setSize(1200, 750);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         
-        // Use native macOS Look and Feel
+        setLayout(new BorderLayout());
+        
+        // --- SIDEBAR ---
+        JPanel pnlSidebar = new JPanel();
+        pnlSidebar.setBackground(COLOR_SIDEBAR);
+        pnlSidebar.setPreferredSize(new Dimension(280, 0));
+        pnlSidebar.setLayout(new BorderLayout());
+        
+        // Header Sidebar
+        JPanel pnlSidebarHeader = new JPanel(new BorderLayout());
+        pnlSidebarHeader.setBackground(COLOR_SIDEBAR);
+        pnlSidebarHeader.setBorder(new EmptyBorder(30, 0, 20, 0));
+        
+        JLabel lblLogo = new JLabel();
         try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {}
+            ImageIcon icon = new ImageIcon("src/images/logo.png");
+            Image img = icon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+            lblLogo.setIcon(new ImageIcon(img));
+        } catch (Exception e) {
+            lblLogo.setText("TCI");
+            lblLogo.setFont(new Font("SansSerif", Font.BOLD, 28));
+            lblLogo.setForeground(COLOR_PRIMARY);
+        }
+        lblLogo.setHorizontalAlignment(SwingConstants.CENTER);
         
-        // Tạo Menu (Không chỉnh sửa Font toàn hệ thống nữa để tránh lỗi macOS)
-        JMenuBar menuBar = new JMenuBar();
+        JPanel pnlTitle = new JPanel(new GridLayout(2, 1));
+        pnlTitle.setOpaque(false);
+        JLabel lblTitle = new JLabel("BỆNH VIỆN THU CÚC", SwingConstants.CENTER);
+        lblTitle.setFont(new Font("SansSerif", Font.BOLD, 16));
+        lblTitle.setForeground(Color.WHITE);
+        JLabel lblAdmin = new JLabel("Vai trò: Admin", SwingConstants.CENTER);
+        lblAdmin.setFont(new Font("SansSerif", Font.PLAIN, 13));
+        lblAdmin.setForeground(COLOR_PRIMARY);
+        pnlTitle.add(lblTitle);
+        pnlTitle.add(lblAdmin);
+        pnlTitle.setBorder(new EmptyBorder(10, 0, 0, 0));
         
-        JMenu menuQuanLy = new JMenu("Quản Lý Danh Mục");
+        pnlSidebarHeader.add(lblLogo, BorderLayout.CENTER);
+        pnlSidebarHeader.add(pnlTitle, BorderLayout.SOUTH);
         
-        JMenuItem mnuBenhNhan = new JMenuItem("Quản Lý Bệnh Nhân");
-        mnuBenhNhan.addActionListener(e -> new FrmQuanLyBenhNhan().setVisible(true));
+        pnlSidebar.add(pnlSidebarHeader, BorderLayout.NORTH);
         
-        JMenuItem mnuBacSy = new JMenuItem("Quản Lý Bác Sỹ");
-        mnuBacSy.addActionListener(e -> new FrmQuanLyBacSy().setVisible(true));
+        // Menu
+        JPanel pnlMenu = new JPanel();
+        pnlMenu.setLayout(new BoxLayout(pnlMenu, BoxLayout.Y_AXIS));
+        pnlMenu.setBackground(COLOR_SIDEBAR);
+        pnlMenu.setBorder(new EmptyBorder(10, 15, 10, 15));
         
-        JMenuItem mnuKhoaPhong = new JMenuItem("Quản Lý Khoa Phòng");
-        mnuKhoaPhong.addActionListener(e -> new FrmQuanLyKhoaPhong().setVisible(true));
+        SidebarItem menuTrangChu = createSidebarItem("Trang Chủ", "TrangChu");
+        pnlMenu.add(menuTrangChu);
+        pnlMenu.add(Box.createRigidArea(new Dimension(0, 5)));
+        pnlMenu.add(createSidebarItem("Quản Lý Nhân Viên", "QuanLyNhanVien"));
+        pnlMenu.add(Box.createRigidArea(new Dimension(0, 5)));
+        pnlMenu.add(createSidebarItem("Quản Lý Bác Sỹ", "QuanLyBacSy"));
+        pnlMenu.add(Box.createRigidArea(new Dimension(0, 5)));
+        pnlMenu.add(createSidebarItem("Quản Lý Bệnh Nhân", "QuanLyBenhNhan"));
+        pnlMenu.add(Box.createRigidArea(new Dimension(0, 5)));
+        pnlMenu.add(createSidebarItem("Quản Lý Khoa Phòng", "QuanLyKhoaPhong"));
+        pnlMenu.add(Box.createRigidArea(new Dimension(0, 5)));
+        pnlMenu.add(createSidebarItem("Quản Lý Giường Bệnh", "QuanLyGiuong"));
+        pnlMenu.add(Box.createRigidArea(new Dimension(0, 5)));
+        pnlMenu.add(createSidebarItem("Quản Lý Lần Khám", "KhamBenh"));
+        pnlMenu.add(Box.createRigidArea(new Dimension(0, 5)));
+        pnlMenu.add(createSidebarItem("Phiếu Nhập Viện", "NhapVien"));
+        pnlMenu.add(Box.createRigidArea(new Dimension(0, 5)));
+        pnlMenu.add(createSidebarItem("Bệnh Đã Phát Hiện", "BenhDaPhatHien"));
+        pnlMenu.add(Box.createRigidArea(new Dimension(0, 5)));
+        pnlMenu.add(createSidebarItem("Tra Cứu Nâng Cao", "TraCuu"));
+        pnlMenu.add(Box.createRigidArea(new Dimension(0, 5)));
+        pnlMenu.add(createSidebarItem("Báo Cáo Thống Kê", "BaoCao"));
         
-        JMenuItem mnuGiuong = new JMenuItem("Quản Lý Giường Bệnh");
-        mnuGiuong.addActionListener(e -> new FrmQuanLyGiuong().setVisible(true));
+        JScrollPane scrollMenu = new JScrollPane(pnlMenu);
+        scrollMenu.setBorder(null);
+        scrollMenu.setOpaque(false);
+        scrollMenu.getViewport().setOpaque(false);
+        pnlSidebar.add(scrollMenu, BorderLayout.CENTER);
         
-        menuQuanLy.add(mnuBenhNhan);
-        menuQuanLy.addSeparator();
-        menuQuanLy.add(mnuBacSy);
-        menuQuanLy.addSeparator();
-        menuQuanLy.add(mnuKhoaPhong);
-        menuQuanLy.addSeparator();
-        menuQuanLy.add(mnuGiuong);
+        // Logout
+        JPanel pnlBottom = new JPanel(new BorderLayout());
+        pnlBottom.setBackground(COLOR_SIDEBAR);
+        pnlBottom.setBorder(new EmptyBorder(15, 15, 25, 15));
         
-        menuBar.add(menuQuanLy);
-        setJMenuBar(menuBar);
-        
-        // Thân trang
-        JPanel pnlBody = new JPanel(new BorderLayout());
-        pnlBody.setBackground(new Color(240, 248, 255)); // Màu xanh nhạt dễ chịu
-        
-        JLabel lblWelcome = new JLabel("HỆ THỐNG QUẢN LÝ BỆNH VIỆN THU CÚC", SwingConstants.CENTER);
-        lblWelcome.setFont(new Font("SansSerif", Font.BOLD, 28));
-        lblWelcome.setForeground(new Color(0, 102, 204));
-        lblWelcome.setBorder(new EmptyBorder(50, 0, 20, 0));
-        
-        JLabel lblSub = new JLabel("Chuyên nghiệp - Tận tâm - Hiện đại", SwingConstants.CENTER);
-        lblSub.setFont(new Font("SansSerif", Font.ITALIC, 18));
-        lblSub.setForeground(new Color(100, 100, 100));
-        
-        JPanel pnlTitles = new JPanel(new GridLayout(2, 1));
-        pnlTitles.setOpaque(false);
-        pnlTitles.add(lblWelcome);
-        pnlTitles.add(lblSub);
-        
-        pnlBody.add(pnlTitles, BorderLayout.NORTH);
-        add(pnlBody, BorderLayout.CENTER);
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new FrmMain().setVisible(true);
+        SidebarItem btnLogout = new SidebarItem("Đăng Xuất", "");
+        btnLogout.setForeground(new Color(255, 99, 71)); // Màu cam đỏ (Tomato) rực rỡ
+        btnLogout.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                dispose();
+                new FrmDangNhap().setVisible(true);
+            }
         });
+        pnlBottom.add(btnLogout, BorderLayout.CENTER);
+        pnlSidebar.add(pnlBottom, BorderLayout.SOUTH);
+        
+        add(pnlSidebar, BorderLayout.WEST);
+        
+        // --- CARD LAYOUT ---
+        cardLayout = new CardLayout();
+        pnlCard = new JPanel(cardLayout);
+        pnlCard.setBackground(COLOR_BG);
+        
+        // --- TRANG CHỦ ---
+        JPanel pnlTrangChu = new JPanel(new BorderLayout());
+        pnlTrangChu.setBackground(COLOR_BG);
+        
+        JPanel pnlCenterBg = new JPanel();
+        pnlCenterBg.setLayout(new BoxLayout(pnlCenterBg, BoxLayout.Y_AXIS));
+        pnlCenterBg.setOpaque(false);
+        pnlCenterBg.setBorder(new EmptyBorder(80, 50, 50, 50));
+        
+        JLabel lblWelcome = new JLabel("HỆ THỐNG QUẢN LÝ BỆNH VIỆN", SwingConstants.CENTER);
+        lblWelcome.setFont(new Font("SansSerif", Font.BOLD, 32));
+        lblWelcome.setForeground(COLOR_CONTENT_TEXT_DARK);
+        lblWelcome.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
+        JLabel lblWelcome2 = new JLabel("ĐA KHOA QUỐC TẾ THU CÚC", SwingConstants.CENTER);
+        lblWelcome2.setFont(new Font("SansSerif", Font.BOLD, 34));
+        lblWelcome2.setForeground(COLOR_PRIMARY);
+        lblWelcome2.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
+        JLabel lblSub = new JLabel("Giải pháp toàn diện quản lý thông tin bệnh nhân, bác sỹ và dịch vụ y tế");
+        lblSub.setFont(new Font("SansSerif", Font.PLAIN, 18));
+        lblSub.setForeground(COLOR_CONTENT_TEXT_MUTED);
+        lblSub.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
+        // Thống kê - màu sắc sống động hơn
+        JPanel pnlStats = new JPanel(new FlowLayout(FlowLayout.CENTER, 40, 20));
+        pnlStats.setOpaque(false);
+        pnlStats.add(createStatCard("Bác Sỹ", "120+", new Color(52, 152, 219))); // Xanh lam
+        pnlStats.add(createStatCard("Giường Bệnh", "500+", new Color(155, 89, 182))); // Tím
+        pnlStats.add(createStatCard("Bệnh Nhân", "10,000+", new Color(230, 126, 34))); // Cam
+        pnlStats.add(createStatCard("Ca Khám/Ngày", "2,500+", COLOR_PRIMARY)); // Xanh ngọc
+        
+        pnlCenterBg.add(lblWelcome);
+        pnlCenterBg.add(Box.createVerticalStrut(5));
+        pnlCenterBg.add(lblWelcome2);
+        pnlCenterBg.add(Box.createVerticalStrut(20));
+        pnlCenterBg.add(lblSub);
+        pnlCenterBg.add(Box.createVerticalStrut(60));
+        pnlCenterBg.add(pnlStats);
+        
+        pnlTrangChu.add(pnlCenterBg, BorderLayout.CENTER);
+        
+        // Add Panels
+        pnlCard.add(pnlTrangChu, "TrangChu");
+        pnlCard.add(new FrmQuanLyBenhNhan(), "QuanLyBenhNhan");
+        pnlCard.add(new FrmQuanLyBacSy(), "QuanLyBacSy");
+        pnlCard.add(new FrmQuanLyKhoaPhong(), "QuanLyKhoaPhong");
+        pnlCard.add(new FrmQuanLyGiuong(), "QuanLyGiuong");
+        pnlCard.add(new FrmQuanLyNhanVien(), "QuanLyNhanVien");
+        pnlCard.add(new FrmKhamBenh(), "KhamBenh");
+        pnlCard.add(new FrmNhapVien(), "NhapVien");
+        pnlCard.add(new FrmBenhDaPhatHien(), "BenhDaPhatHien");
+        pnlCard.add(new FrmTraCuu(), "TraCuu");
+        pnlCard.add(new FrmBaoCao(), "BaoCao");
+        
+        add(pnlCard, BorderLayout.CENTER);
+        
+        // Set Default Active
+        setActiveItem(menuTrangChu);
+    }
+    
+    private SidebarItem createSidebarItem(String text, String panelName) {
+        SidebarItem item = new SidebarItem(text, panelName);
+        item.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (!panelName.isEmpty()) {
+                    cardLayout.show(pnlCard, panelName);
+                    setActiveItem(item);
+                }
+            }
+        });
+        return item;
+    }
+    
+    private void setActiveItem(SidebarItem item) {
+        if (activeItem != null) {
+            activeItem.setActive(false);
+        }
+        activeItem = item;
+        activeItem.setActive(true);
+    }
+    
+    private JPanel createStatCard(String title, String value, Color colorAccent) {
+        JPanel pnl = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                
+                // Đổ bóng (shadow)
+                g2.setColor(new Color(0, 0, 0, 15));
+                g2.fill(new RoundRectangle2D.Float(2, 5, getWidth() - 4, getHeight() - 5, 15, 15));
+                
+                // Nền chính
+                g2.setColor(Color.WHITE);
+                g2.fill(new RoundRectangle2D.Float(0, 0, getWidth() - 4, getHeight() - 5, 15, 15));
+                
+                // Viền màu accent nhỏ trên cùng (top border)
+                g2.setColor(colorAccent);
+                g2.fill(new RoundRectangle2D.Float(0, 0, getWidth() - 4, 8, 15, 15)); // bo góc trên
+                g2.fillRect(0, 4, getWidth() - 4, 4); // lấp đi viền bo góc dưới của thanh màu này
+                
+                g2.dispose();
+            }
+        };
+        pnl.setLayout(new BorderLayout());
+        pnl.setOpaque(false);
+        pnl.setPreferredSize(new Dimension(210, 130));
+        pnl.setBorder(new EmptyBorder(30, 20, 20, 20));
+        
+        JLabel lblValue = new JLabel(value, SwingConstants.CENTER);
+        lblValue.setFont(new Font("SansSerif", Font.BOLD, 36));
+        lblValue.setForeground(colorAccent);
+        
+        JLabel lblTitle = new JLabel(title, SwingConstants.CENTER);
+        lblTitle.setFont(new Font("SansSerif", Font.BOLD, 15));
+        lblTitle.setForeground(COLOR_CONTENT_TEXT_DARK);
+        
+        pnl.add(lblValue, BorderLayout.CENTER);
+        pnl.add(lblTitle, BorderLayout.SOUTH);
+        return pnl;
+    }
+    
+    // Custom Label làm nút bấm Sidebar
+    class SidebarItem extends JLabel {
+        private boolean isActive = false;
+        private boolean isHover = false;
+        private String panelName;
+        
+        public SidebarItem(String text, String panelName) {
+            super("  " + text);
+            this.panelName = panelName;
+            setFont(new Font("SansSerif", Font.BOLD, 14));
+            setForeground(COLOR_SIDEBAR_TEXT);
+            setPreferredSize(new Dimension(250, 45));
+            setMaximumSize(new Dimension(250, 45));
+            setCursor(new Cursor(Cursor.HAND_CURSOR));
+            
+            addMouseListener(new MouseAdapter() {
+                public void mouseEntered(MouseEvent e) {
+                    isHover = true;
+                    repaint();
+                }
+                public void mouseExited(MouseEvent e) {
+                    isHover = false;
+                    repaint();
+                }
+            });
+        }
+        
+        public void setActive(boolean active) {
+            this.isActive = active;
+            if (active) {
+                setForeground(Color.WHITE);
+            } else {
+                setForeground(COLOR_SIDEBAR_TEXT);
+            }
+            repaint();
+        }
+        
+        @Override
+        protected void paintComponent(Graphics g) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            
+            // Fix: Sử dụng biến isActive và isHover để quyết định vẽ background
+            if (isActive) {
+                g2.setColor(COLOR_PRIMARY);
+                g2.fill(new RoundRectangle2D.Float(0, 0, getWidth(), getHeight(), 10, 10));
+            } else if (isHover) {
+                g2.setColor(COLOR_HOVER);
+                g2.fill(new RoundRectangle2D.Float(0, 0, getWidth(), getHeight(), 10, 10));
+            }
+            
+            g2.dispose();
+            super.paintComponent(g);
+        }
+        
+        @Override
+        public boolean isOpaque() {
+            return false; // Phải return false để Swing không vẽ đè background mặc định hình chữ nhật
+        }
     }
 }

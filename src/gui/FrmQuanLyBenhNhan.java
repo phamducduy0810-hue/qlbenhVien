@@ -1,4 +1,5 @@
 package gui;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
@@ -10,78 +11,52 @@ import dao.BenhNhanDAO;
 import model.BenhNhan;
 import java.text.SimpleDateFormat;
 
-public class FrmQuanLyBenhNhan extends JFrame {
-    private JTextField txtMaSo, txtCMND, txtGioiTinh, txtNgaySinh, txtDiaChi, txtNgayDangKy, txtMaBacSy;
+public class FrmQuanLyBenhNhan extends JPanel {
     private JTable table;
     private DefaultTableModel tableModel;
     private BenhNhanDAO dao = new BenhNhanDAO();
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
     public FrmQuanLyBenhNhan() {
-        setTitle("Quản Lý Bệnh Nhân");
-        setSize(1000, 600);
-        setLocationRelativeTo(null);
         setLayout(new BorderLayout(10, 10));
-        getContentPane().setBackground(new Color(245, 245, 250));
+        setBackground(new Color(245, 245, 250));
 
         // Tiêu đề form
         JLabel lblTitle = new JLabel("THÔNG TIN BỆNH NHÂN", SwingConstants.CENTER);
         lblTitle.setFont(new Font("SansSerif", Font.BOLD, 22));
         lblTitle.setForeground(new Color(0, 102, 204));
-        lblTitle.setBorder(new EmptyBorder(15, 0, 5, 0));
+        lblTitle.setBorder(new EmptyBorder(15, 0, 15, 0));
         add(lblTitle, BorderLayout.NORTH);
 
-        // Vùng nhập liệu
-        JPanel pnlInput = new JPanel(new GridLayout(4, 4, 15, 15));
-        pnlInput.setBorder(BorderFactory.createCompoundBorder(
-            new EmptyBorder(10, 20, 10, 20),
-            BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY), "Điền thông tin", TitledBorder.LEFT, TitledBorder.TOP, new Font("SansSerif", Font.BOLD, 14), Color.DARK_GRAY)
-        ));
-        pnlInput.setBackground(Color.WHITE);
-        
-        pnlInput.add(new JLabel("Mã Số BN:")); txtMaSo = new JTextField(); pnlInput.add(txtMaSo);
-        pnlInput.add(new JLabel("CMND/CCCD:")); txtCMND = new JTextField(); pnlInput.add(txtCMND);
-        pnlInput.add(new JLabel("Giới Tính:")); txtGioiTinh = new JTextField(); pnlInput.add(txtGioiTinh);
-        pnlInput.add(new JLabel("Ngày Sinh (N-T-N):")); txtNgaySinh = new JTextField(); pnlInput.add(txtNgaySinh);
-        pnlInput.add(new JLabel("Địa Chỉ:")); txtDiaChi = new JTextField(); pnlInput.add(txtDiaChi);
-        pnlInput.add(new JLabel("Ngày Đăng Ký:")); txtNgayDangKy = new JTextField(); pnlInput.add(txtNgayDangKy);
-        pnlInput.add(new JLabel("Mã Bác Sỹ:")); txtMaBacSy = new JTextField(); pnlInput.add(txtMaBacSy);
-        
-        // Nút chức năng
-        JPanel pnlButtons = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
-        pnlButtons.setBackground(new Color(245, 245, 250));
-        
-        JButton btnAdd = createButton("Thêm Mới", new Color(46, 204, 113));
-        JButton btnUpdate = createButton("Cập Nhật", new Color(52, 152, 219));
-        JButton btnDelete = createButton("Xóa", new Color(231, 76, 60));
-        JButton btnLoad = createButton("Tải Lại", new Color(155, 89, 182));
+        // Thanh công cụ (Toolbar)
+        JPanel pnlToolbar = new JPanel(new BorderLayout());
+        pnlToolbar.setOpaque(false);
+        pnlToolbar.setBorder(new EmptyBorder(0, 20, 10, 20));
 
-        btnAdd.addActionListener(e -> {
-            try {
-                BenhNhan bn = new BenhNhan(txtMaSo.getText(), txtCMND.getText(), txtGioiTinh.getText(),
-                    sdf.parse(txtNgaySinh.getText()), txtDiaChi.getText(), sdf.parse(txtNgayDangKy.getText()), txtMaBacSy.getText());
-                if (dao.insert(bn)) { JOptionPane.showMessageDialog(this, "Thêm thành công"); loadData(); }
-            } catch (Exception ex) { JOptionPane.showMessageDialog(this, "Lỗi định dạng ngày tháng (yyyy-MM-dd)!"); }
-        });
-        btnUpdate.addActionListener(e -> {
-            try {
-                BenhNhan bn = new BenhNhan(txtMaSo.getText(), txtCMND.getText(), txtGioiTinh.getText(),
-                    sdf.parse(txtNgaySinh.getText()), txtDiaChi.getText(), sdf.parse(txtNgayDangKy.getText()), txtMaBacSy.getText());
-                if (dao.update(bn)) { JOptionPane.showMessageDialog(this, "Sửa thành công"); loadData(); }
-            } catch (Exception ex) { JOptionPane.showMessageDialog(this, "Lỗi định dạng ngày tháng (yyyy-MM-dd)!"); }
-        });
-        btnDelete.addActionListener(e -> {
-            if (dao.delete(txtMaSo.getText())) { JOptionPane.showMessageDialog(this, "Xoá thành công"); loadData(); }
-        });
-        btnLoad.addActionListener(e -> loadData());
-
-        pnlButtons.add(btnAdd); pnlButtons.add(btnUpdate); pnlButtons.add(btnDelete); pnlButtons.add(btnLoad);
+        JPanel pnlActions = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        pnlActions.setOpaque(false);
+        JButton btnAdd = createToolButton("➕ Thêm");
+        JButton btnUpdate = createToolButton("✏️ Sửa");
+        JButton btnDelete = createToolButton("❌ Xóa");
+        JButton btnView = createToolButton("🔍 Xem chi tiết");
+        JButton btnExcel = createToolButton("📊 Xuất Excel");
+        JButton btnLoad = createToolButton("🔄 Làm mới");
         
-        JPanel pnlTop = new JPanel(new BorderLayout());
-        pnlTop.setOpaque(false);
-        pnlTop.add(pnlInput, BorderLayout.CENTER);
-        pnlTop.add(pnlButtons, BorderLayout.SOUTH);
-        add(pnlTop, BorderLayout.CENTER);
+        pnlActions.add(btnAdd);
+        pnlActions.add(btnUpdate);
+        pnlActions.add(btnDelete);
+        pnlActions.add(btnView);
+        pnlActions.add(btnExcel);
+        pnlActions.add(btnLoad);
+
+        JPanel pnlSearch = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
+        pnlSearch.setOpaque(false);
+        pnlSearch.add(new JLabel("Tìm theo mã:"));
+        JTextField txtSearch = new JTextField(15);
+        pnlSearch.add(txtSearch);
+
+        pnlToolbar.add(pnlActions, BorderLayout.WEST);
+        pnlToolbar.add(pnlSearch, BorderLayout.EAST);
 
         // Bảng dữ liệu
         tableModel = new DefaultTableModel(new Object[]{"Mã Số", "CMND", "Giới Tính", "Ngày Sinh", "Địa Chỉ", "Đăng Ký", "Mã BS"}, 0);
@@ -92,40 +67,65 @@ public class FrmQuanLyBenhNhan extends JFrame {
         
         JTableHeader header = table.getTableHeader();
         header.setFont(new Font("SansSerif", Font.BOLD, 14));
-        header.setBackground(new Color(200, 200, 200));
+        header.setBackground(new Color(230, 230, 230));
         
         JPanel pnlTable = new JPanel(new BorderLayout());
-        pnlTable.setBorder(new EmptyBorder(10, 20, 20, 20));
+        pnlTable.setBorder(new EmptyBorder(0, 20, 20, 20));
         pnlTable.setOpaque(false);
         pnlTable.add(new JScrollPane(table), BorderLayout.CENTER);
-        add(pnlTable, BorderLayout.SOUTH);
         
-        table.getSelectionModel().addListSelectionListener(e -> {
+        JPanel pnlCenter = new JPanel(new BorderLayout());
+        pnlCenter.setOpaque(false);
+        pnlCenter.add(pnlToolbar, BorderLayout.NORTH);
+        pnlCenter.add(pnlTable, BorderLayout.CENTER);
+        
+        add(pnlCenter, BorderLayout.CENTER);
+
+        // Sự kiện các nút
+        btnAdd.addActionListener(e -> showFormDialog(null));
+        btnUpdate.addActionListener(e -> {
             int row = table.getSelectedRow();
-            if (row >= 0) {
-                txtMaSo.setText(tableModel.getValueAt(row, 0) != null ? tableModel.getValueAt(row, 0).toString() : "");
-                txtCMND.setText(tableModel.getValueAt(row, 1) != null ? tableModel.getValueAt(row, 1).toString() : "");
-                txtGioiTinh.setText(tableModel.getValueAt(row, 2) != null ? tableModel.getValueAt(row, 2).toString() : "");
-                txtNgaySinh.setText(tableModel.getValueAt(row, 3) != null ? tableModel.getValueAt(row, 3).toString() : "");
-                txtDiaChi.setText(tableModel.getValueAt(row, 4) != null ? tableModel.getValueAt(row, 4).toString() : "");
-                txtNgayDangKy.setText(tableModel.getValueAt(row, 5) != null ? tableModel.getValueAt(row, 5).toString() : "");
-                txtMaBacSy.setText(tableModel.getValueAt(row, 6) != null ? tableModel.getValueAt(row, 6).toString() : "");
+            if (row < 0) {
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn bệnh nhân cần sửa!");
+                return;
+            }
+            String maSo = tableModel.getValueAt(row, 0).toString();
+            // Lấy bệnh nhân từ CSDL (tạm thời lặp tìm)
+            BenhNhan selected = null;
+            for(BenhNhan bn : dao.getAll()) {
+                if(bn.getMaSo().equals(maSo)) {
+                    selected = bn; break;
+                }
+            }
+            if (selected != null) showFormDialog(selected);
+        });
+        
+        btnDelete.addActionListener(e -> {
+            int row = table.getSelectedRow();
+            if (row < 0) {
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn bệnh nhân cần xóa!");
+                return;
+            }
+            String maSo = tableModel.getValueAt(row, 0).toString();
+            int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn xóa bệnh nhân " + maSo + "?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                if (dao.delete(maSo)) {
+                    JOptionPane.showMessageDialog(this, "Xoá thành công!");
+                    loadData();
+                }
             }
         });
+        
+        btnLoad.addActionListener(e -> loadData());
 
         loadData();
     }
     
-    private JButton createButton(String text, Color color) {
+    private JButton createToolButton(String text) {
         JButton btn = new JButton(text);
-        btn.setFont(new Font("SansSerif", Font.BOLD, 14));
-        btn.setForeground(Color.WHITE);
-        btn.setBackground(color);
+        btn.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        btn.setBackground(Color.WHITE);
         btn.setFocusPainted(false);
-        btn.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(color.darker(), 1),
-            new EmptyBorder(8, 20, 8, 20)
-        ));
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         return btn;
     }
@@ -141,5 +141,114 @@ public class FrmQuanLyBenhNhan extends JFrame {
                 bn.getMaBacSy()
             });
         }
+    }
+    
+    // Hộp thoại form nhập liệu
+    private void showFormDialog(BenhNhan bn) {
+        JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), bn == null ? "Thêm Bệnh Nhân" : "Sửa Bệnh Nhân", true);
+        dialog.setSize(600, 300);
+        dialog.setLocationRelativeTo(this);
+        
+        JPanel pnlInput = new JPanel(new GridLayout(4, 4, 15, 15));
+        pnlInput.setBorder(new EmptyBorder(20, 20, 20, 20));
+        
+        JTextField txtMaSo = new JTextField();
+        JTextField txtCMND = new JTextField();
+        
+        JRadioButton radNam = new JRadioButton("Nam");
+        JRadioButton radNu = new JRadioButton("Nữ");
+        radNam.setSelected(true);
+        ButtonGroup bgGioiTinh = new ButtonGroup();
+        bgGioiTinh.add(radNam);
+        bgGioiTinh.add(radNu);
+        JPanel pnlGioiTinh = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        pnlGioiTinh.add(radNam);
+        pnlGioiTinh.add(radNu);
+        
+        JSpinner spnNgaySinh = new JSpinner(new SpinnerDateModel());
+        JSpinner.DateEditor editorNgaySinh = new JSpinner.DateEditor(spnNgaySinh, "yyyy-MM-dd");
+        spnNgaySinh.setEditor(editorNgaySinh);
+        
+        JTextField txtDiaChi = new JTextField();
+        
+        JSpinner spnNgayDangKy = new JSpinner(new SpinnerDateModel());
+        JSpinner.DateEditor editorNgayDangKy = new JSpinner.DateEditor(spnNgayDangKy, "yyyy-MM-dd");
+        spnNgayDangKy.setEditor(editorNgayDangKy);
+        
+        JTextField txtMaBacSy = new JTextField();
+        
+        if (bn != null) {
+            txtMaSo.setText(bn.getMaSo());
+            txtMaSo.setEditable(false);
+            txtCMND.setText(bn.getCmnd());
+            if ("Nữ".equalsIgnoreCase(bn.getGioiTinh())) radNu.setSelected(true);
+            else radNam.setSelected(true);
+            if (bn.getNgaySinh() != null) spnNgaySinh.setValue(bn.getNgaySinh());
+            txtDiaChi.setText(bn.getDiaChi());
+            if (bn.getNgayDangKy() != null) spnNgayDangKy.setValue(bn.getNgayDangKy());
+            txtMaBacSy.setText(bn.getMaBacSy());
+        }
+        
+        pnlInput.add(new JLabel("Mã Số BN:")); pnlInput.add(txtMaSo);
+        pnlInput.add(new JLabel("CMND/CCCD:")); pnlInput.add(txtCMND);
+        pnlInput.add(new JLabel("Giới Tính:")); pnlInput.add(pnlGioiTinh);
+        pnlInput.add(new JLabel("Ngày Sinh (Y-M-D):")); pnlInput.add(spnNgaySinh);
+        pnlInput.add(new JLabel("Địa Chỉ:")); pnlInput.add(txtDiaChi);
+        pnlInput.add(new JLabel("Ngày Đăng Ký (Y-M-D):")); pnlInput.add(spnNgayDangKy);
+        pnlInput.add(new JLabel("Mã Bác Sỹ:")); pnlInput.add(txtMaBacSy);
+        
+        JPanel pnlButtons = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+        JButton btnSave = new JButton("💾 Lưu thông tin");
+        btnSave.setFont(new Font("SansSerif", Font.BOLD, 14));
+        btnSave.setBackground(new Color(46, 204, 113));
+        btnSave.setForeground(Color.WHITE);
+        btnSave.setOpaque(true);
+        btnSave.setBorderPainted(false);
+        btnSave.setFocusPainted(false);
+        btnSave.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        
+        JButton btnCancel = new JButton("❌ Đóng");
+        btnCancel.setFont(new Font("SansSerif", Font.BOLD, 14));
+        btnCancel.setBackground(new Color(231, 76, 60));
+        btnCancel.setForeground(Color.WHITE);
+        btnCancel.setOpaque(true);
+        btnCancel.setBorderPainted(false);
+        btnCancel.setFocusPainted(false);
+        btnCancel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        
+        btnCancel.addActionListener(e -> dialog.dispose());
+        btnSave.addActionListener(e -> {
+            try {
+                String gioiTinh = radNam.isSelected() ? "Nam" : "Nữ";
+                java.util.Date ngaySinh = (java.util.Date) spnNgaySinh.getValue();
+                java.util.Date ngayDangKy = (java.util.Date) spnNgayDangKy.getValue();
+                BenhNhan newBn = new BenhNhan(txtMaSo.getText(), txtCMND.getText(), gioiTinh,
+                    ngaySinh, txtDiaChi.getText(), ngayDangKy, txtMaBacSy.getText());
+                
+                if (bn == null) {
+                    if (dao.insert(newBn)) {
+                        JOptionPane.showMessageDialog(dialog, "Thêm thành công");
+                        loadData();
+                        dialog.dispose();
+                    }
+                } else {
+                    if (dao.update(newBn)) {
+                        JOptionPane.showMessageDialog(dialog, "Sửa thành công");
+                        loadData();
+                        dialog.dispose();
+                    }
+                }
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(dialog, "Lỗi định dạng ngày tháng (yyyy-MM-dd)!");
+            }
+        });
+        
+        pnlButtons.add(btnSave);
+        pnlButtons.add(btnCancel);
+        
+        dialog.setLayout(new BorderLayout());
+        dialog.add(pnlInput, BorderLayout.CENTER);
+        dialog.add(pnlButtons, BorderLayout.SOUTH);
+        dialog.setVisible(true);
     }
 }

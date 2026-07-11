@@ -8,23 +8,22 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.sql.Date;
-import model.BacSy;
+import model.BenhDaPhatHien;
 
-public class BacSyDAO {
+public class BenhDaPhatHienDAO {
 
-    public List<BacSy> getAll() {
-        List<BacSy> list = new ArrayList<>();
-        String sql = "SELECT * FROM BacSy";
+    public List<BenhDaPhatHien> getAll() {
+        List<BenhDaPhatHien> list = new ArrayList<>();
+        String sql = "SELECT * FROM BenhDaPhatHien";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
-                BacSy obj = new BacSy();
-                obj.setMaSo(rs.getString("MaSo"));
-                obj.setDienThoai(rs.getString("DienThoai"));
-                obj.setChuyenNganh(rs.getString("ChuyenNganh"));
-                obj.setKyNang(rs.getString("KyNang"));
-                obj.setLichLamViec(rs.getString("LichLamViec"));
+                BenhDaPhatHien obj = new BenhDaPhatHien();
+                obj.setMaBenh(rs.getInt("MaBenh"));
+                obj.setMaBenhNhan(rs.getString("MaBenhNhan"));
+                obj.setTenBenh(rs.getString("TenBenh"));
+                obj.setNgayPhatHien(rs.getDate("NgayPhatHien"));
                 list.add(obj);
             }
         } catch (SQLException e) {
@@ -33,15 +32,14 @@ public class BacSyDAO {
         return list;
     }
 
-    public boolean insert(BacSy obj) {
-        String sql = "INSERT INTO BacSy(MaSo, DienThoai, ChuyenNganh, KyNang, LichLamViec) VALUES (?, ?, ?, ?, ?)";
+    public boolean insert(BenhDaPhatHien obj) {
+        String sql = "INSERT INTO BenhDaPhatHien(MaBenh, MaBenhNhan, TenBenh, NgayPhatHien) VALUES (?, ?, ?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, obj.getMaSo());
-            ps.setString(2, obj.getDienThoai());
-            ps.setString(3, obj.getChuyenNganh());
-            ps.setString(4, obj.getKyNang());
-            ps.setString(5, obj.getLichLamViec());
+            ps.setInt(1, obj.getMaBenh());
+            ps.setString(2, obj.getMaBenhNhan());
+            ps.setString(3, obj.getTenBenh());
+            ps.setDate(4, new Date(obj.getNgayPhatHien().getTime()));
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -49,11 +47,11 @@ public class BacSyDAO {
         return false;
     }
 
-    public boolean delete(String maSo) {
-        String sql = "DELETE FROM BacSy WHERE MaSo=?";
+    public boolean delete(int maBenh) {
+        String sql = "DELETE FROM BenhDaPhatHien WHERE MaBenh=?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, maSo);
+            ps.setInt(1, maBenh);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -61,15 +59,14 @@ public class BacSyDAO {
         return false;
     }
 
-    public boolean update(BacSy obj) {
-        String sql = "UPDATE BacSy SET DienThoai=?, ChuyenNganh=?, KyNang=?, LichLamViec=? WHERE MaSo=?";
+    public boolean update(BenhDaPhatHien obj) {
+        String sql = "UPDATE BenhDaPhatHien SET MaBenhNhan=?, TenBenh=?, NgayPhatHien=? WHERE MaBenh=?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, obj.getDienThoai());
-            ps.setString(2, obj.getChuyenNganh());
-            ps.setString(3, obj.getKyNang());
-            ps.setString(4, obj.getLichLamViec());
-            ps.setString(5, obj.getMaSo());
+            ps.setString(1, obj.getMaBenhNhan());
+            ps.setString(2, obj.getTenBenh());
+            ps.setDate(3, new Date(obj.getNgayPhatHien().getTime()));
+            ps.setInt(4, obj.getMaBenh());
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
