@@ -45,7 +45,9 @@ public class FrmKhamBenh extends JPanel {
         pnlSearch.setOpaque(false);
         pnlSearch.add(new JLabel("Tìm mã lần khám:"));
         JTextField txtSearch = new JTextField(15);
+        JButton btnSearch = createToolButton("Tìm kiếm");
         pnlSearch.add(txtSearch);
+        pnlSearch.add(btnSearch);
 
         pnlToolbar.add(pnlActions, BorderLayout.WEST);
         pnlToolbar.add(pnlSearch, BorderLayout.EAST);

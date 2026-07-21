@@ -76,6 +76,10 @@ public class FrmDangNhap extends JFrame {
         java.awt.event.ActionListener loginAction = (ActionEvent e) -> {
             String u = txtUser.getText();
             String p = new String(txtPass.getPassword());
+            if (u.isEmpty() || p.isEmpty() || u.equals("Tài khoản") || p.equals("Mật khẩu")) {
+                JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin!", "Lỗi", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
             if (u.equals("admin") && p.equals("admin")) {
                 this.dispose();
                 new FrmMain().setVisible(true);

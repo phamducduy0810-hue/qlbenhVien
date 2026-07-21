@@ -1,6 +1,7 @@
 src/pmqlbenhvienthucuc/PMQLBenhVienThuCuc.java
 src/dao/BenhDaPhatHienDAO.java
 src/dao/KhoaDieuTriDAO.java
+src/dao/ThongKeDAO.java
 src/dao/BacSyDAO.java
 src/dao/BenhNhanDAO.java
 src/dao/LanKhamDAO.java

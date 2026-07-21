@@ -213,6 +213,25 @@ public class FrmMain extends JFrame {
         activeItem.setActive(true);
     }
     
+    public void switchPanel(String panelName) {
+        cardLayout.show(pnlCard, panelName);
+        // Highlight menu tương ứng nếu cần
+        for (Component c : ((JPanel)((BorderLayout)((JPanel)getContentPane().getComponent(0)).getLayout()).getLayoutComponent(BorderLayout.WEST)).getComponents()) {
+            if (c instanceof JPanel) {
+                for (Component menuC : ((JPanel)c).getComponents()) {
+                    if (menuC instanceof SidebarItem) {
+                        SidebarItem item = (SidebarItem) menuC;
+                        if (item.panelName.equals(panelName)) {
+                            if (activeItem != null) activeItem.setActive(false);
+                            activeItem = item;
+                            item.setActive(true);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private JPanel createStatCard(String title, String value, Color colorAccent) {
         JPanel pnl = new JPanel() {
             @Override

@@ -45,7 +45,9 @@ public class FrmQuanLyNhanVien extends JPanel {
         pnlSearch.setOpaque(false);
         pnlSearch.add(new JLabel("Tìm theo mã:"));
         JTextField txtSearch = new JTextField(15);
+        JButton btnSearch = createToolButton("Tìm kiếm");
         pnlSearch.add(txtSearch);
+        pnlSearch.add(btnSearch);
 
         pnlToolbar.add(pnlActions, BorderLayout.WEST);
         pnlToolbar.add(pnlSearch, BorderLayout.EAST);

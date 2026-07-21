@@ -29,7 +29,7 @@ public class FrmQuanLyBenhNhan extends JPanel {
         add(lblTitle, BorderLayout.NORTH);
 
         // Thanh công cụ (Toolbar)
-        JPanel pnlToolbar = new JPanel(new BorderLayout());
+        JPanel pnlToolbar = new JPanel(new GridLayout(2, 1, 0, 5));
         pnlToolbar.setOpaque(false);
         pnlToolbar.setBorder(new EmptyBorder(0, 20, 10, 20));
 
@@ -49,14 +49,16 @@ public class FrmQuanLyBenhNhan extends JPanel {
         pnlActions.add(btnExcel);
         pnlActions.add(btnLoad);
 
-        JPanel pnlSearch = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
+        JPanel pnlSearch = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
         pnlSearch.setOpaque(false);
         pnlSearch.add(new JLabel("Tìm theo mã:"));
         JTextField txtSearch = new JTextField(15);
+        JButton btnSearch = createToolButton("Tìm kiếm");
         pnlSearch.add(txtSearch);
+        pnlSearch.add(btnSearch);
 
-        pnlToolbar.add(pnlActions, BorderLayout.WEST);
-        pnlToolbar.add(pnlSearch, BorderLayout.EAST);
+        pnlToolbar.add(pnlActions);
+        pnlToolbar.add(pnlSearch);
 
         // Bảng dữ liệu
         tableModel = new DefaultTableModel(new Object[]{"Mã Số", "CMND", "Giới Tính", "Ngày Sinh", "Địa Chỉ", "Đăng Ký", "Mã BS"}, 0);

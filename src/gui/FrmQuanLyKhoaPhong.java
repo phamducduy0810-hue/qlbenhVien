@@ -45,7 +45,9 @@ public class FrmQuanLyKhoaPhong extends JPanel {
         pnlSearch.setOpaque(false);
         pnlSearch.add(new JLabel("Tìm theo mã:"));
         JTextField txtSearch = new JTextField(15);
+        JButton btnSearch = createToolButton("Tìm kiếm");
         pnlSearch.add(txtSearch);
+        pnlSearch.add(btnSearch);
 
         pnlToolbar.add(pnlActions, BorderLayout.WEST);
         pnlToolbar.add(pnlSearch, BorderLayout.EAST);
@@ -151,10 +153,22 @@ public class FrmQuanLyKhoaPhong extends JPanel {
         
         JPanel pnlButtons = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         JButton btnSave = new JButton("💾 Lưu thông tin");
+        btnSave.setFont(new Font("SansSerif", Font.BOLD, 14));
         btnSave.setBackground(new Color(46, 204, 113));
         btnSave.setForeground(Color.WHITE);
+        btnSave.setOpaque(true);
+        btnSave.setBorderPainted(false);
+        btnSave.setFocusPainted(false);
+        btnSave.setCursor(new Cursor(Cursor.HAND_CURSOR));
         
-        JButton btnCancel = new JButton("Đóng");
+        JButton btnCancel = new JButton("❌ Đóng");
+        btnCancel.setFont(new Font("SansSerif", Font.BOLD, 14));
+        btnCancel.setBackground(new Color(231, 76, 60));
+        btnCancel.setForeground(Color.WHITE);
+        btnCancel.setOpaque(true);
+        btnCancel.setBorderPainted(false);
+        btnCancel.setFocusPainted(false);
+        btnCancel.setCursor(new Cursor(Cursor.HAND_CURSOR));
         
         btnCancel.addActionListener(e -> dialog.dispose());
         btnSave.addActionListener(e -> {
