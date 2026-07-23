@@ -159,41 +159,54 @@ public class FrmMain extends JFrame {
         JPanel pnlTrangChu = new JPanel(new BorderLayout());
         pnlTrangChu.setBackground(COLOR_BG);
         
-        JPanel pnlCenterBg = new JPanel();
-        pnlCenterBg.setLayout(new BoxLayout(pnlCenterBg, BoxLayout.Y_AXIS));
-        pnlCenterBg.setOpaque(false);
-        pnlCenterBg.setBorder(new EmptyBorder(80, 50, 50, 50));
+        JPanel pnlCenterBg = new JPanel() {
+            Image bgImg;
+            {
+                try {
+                    java.net.URL url = getClass().getResource("/images/hospital_cover.jpg");
+                    if (url != null) bgImg = new ImageIcon(url).getImage();
+                } catch(Exception e){}
+            }
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                if (bgImg != null) {
+                    // Vẽ ảnh full màn hình (ảnh mới đã có sẵn bầu trời trống phía trên)
+                    g.drawImage(bgImg, 0, 0, getWidth(), getHeight(), this);
+                }
+            }
+        };
+        pnlCenterBg.setLayout(new BorderLayout());
+        pnlCenterBg.setOpaque(true);
         
+        // Bảng chứa chữ (KHÔNG nền mờ)
+        JPanel pnlTextWrapper = new JPanel();
+        pnlTextWrapper.setOpaque(false);
+        pnlTextWrapper.setLayout(new BoxLayout(pnlTextWrapper, BoxLayout.Y_AXIS));
+
         JLabel lblWelcome = new JLabel("HỆ THỐNG QUẢN LÝ BỆNH VIỆN", SwingConstants.CENTER);
-        lblWelcome.setFont(new Font("SansSerif", Font.BOLD, 32));
-        lblWelcome.setForeground(COLOR_CONTENT_TEXT_DARK);
+        lblWelcome.setFont(new Font("SansSerif", Font.BOLD, 42));
+        lblWelcome.setForeground(new Color(26, 35, 45)); // Màu đen xanh navy đậm (tương phản tốt với bầu trời)
         lblWelcome.setAlignmentX(Component.CENTER_ALIGNMENT);
         
         JLabel lblWelcome2 = new JLabel("ĐA KHOA QUỐC TẾ THU CÚC", SwingConstants.CENTER);
-        lblWelcome2.setFont(new Font("SansSerif", Font.BOLD, 34));
-        lblWelcome2.setForeground(COLOR_PRIMARY);
+        lblWelcome2.setFont(new Font("Serif", Font.BOLD | Font.ITALIC, 50)); // Font chữ sang trọng
+        lblWelcome2.setForeground(new Color(0, 150, 60)); // Màu xanh lục nổi bật
         lblWelcome2.setAlignmentX(Component.CENTER_ALIGNMENT);
         
-        JLabel lblSub = new JLabel("Giải pháp toàn diện quản lý thông tin bệnh nhân, bác sỹ và dịch vụ y tế");
-        lblSub.setFont(new Font("SansSerif", Font.PLAIN, 18));
-        lblSub.setForeground(COLOR_CONTENT_TEXT_MUTED);
-        lblSub.setAlignmentX(Component.CENTER_ALIGNMENT);
+        pnlTextWrapper.add(lblWelcome);
+        pnlTextWrapper.add(Box.createVerticalStrut(15));
+        pnlTextWrapper.add(lblWelcome2);
+
+        // Đẩy toàn bộ chữ lên ĐỈNH màn hình (phần không gian bầu trời của ảnh mới)
+        pnlCenterBg.add(Box.createVerticalStrut(60), BorderLayout.NORTH); // Cách mép trên 60px
+        pnlCenterBg.add(pnlTextWrapper, BorderLayout.CENTER); // Phần text chiếm không gian giữa
         
-        // Thống kê - màu sắc sống động hơn
-        JPanel pnlStats = new JPanel(new FlowLayout(FlowLayout.CENTER, 40, 20));
-        pnlStats.setOpaque(false);
-        pnlStats.add(createStatCard("Bác Sỹ", "120+", new Color(52, 152, 219))); // Xanh lam
-        pnlStats.add(createStatCard("Giường Bệnh", "500+", new Color(155, 89, 182))); // Tím
-        pnlStats.add(createStatCard("Bệnh Nhân", "10,000+", new Color(230, 126, 34))); // Cam
-        pnlStats.add(createStatCard("Ca Khám/Ngày", "2,500+", COLOR_PRIMARY)); // Xanh ngọc
-        
-        pnlCenterBg.add(lblWelcome);
-        pnlCenterBg.add(Box.createVerticalStrut(5));
-        pnlCenterBg.add(lblWelcome2);
-        pnlCenterBg.add(Box.createVerticalStrut(20));
-        pnlCenterBg.add(lblSub);
-        pnlCenterBg.add(Box.createVerticalStrut(60));
-        pnlCenterBg.add(pnlStats);
+        // Tạo một khoảng trống cực lớn ở dưới để ép cụm text lên trên cùng
+        JPanel pnlBottomSpacer = new JPanel();
+        pnlBottomSpacer.setOpaque(false);
+        pnlBottomSpacer.setPreferredSize(new Dimension(10, 450)); // Chiều cao 450px đẩy text lên bầu trời
+        pnlCenterBg.add(pnlBottomSpacer, BorderLayout.SOUTH);
         
         pnlTrangChu.add(pnlCenterBg, BorderLayout.CENTER);
         
