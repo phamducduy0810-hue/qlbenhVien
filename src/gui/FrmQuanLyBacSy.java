@@ -107,7 +107,31 @@ public class FrmQuanLyBacSy extends JPanel {
             }
         });
         
-        btnLoad.addActionListener(e -> loadData());
+        btnLoad.addActionListener(e -> {
+            txtSearch.setText("");
+            if (table.getRowSorter() != null) {
+                ((javax.swing.table.TableRowSorter)table.getRowSorter()).setRowFilter(null);
+            }
+            loadData();
+        });
+        
+        btnSearch.addActionListener(e -> {
+            String keyword = txtSearch.getText().trim().toLowerCase();
+            javax.swing.table.TableRowSorter<DefaultTableModel> sorter = (javax.swing.table.TableRowSorter<DefaultTableModel>) table.getRowSorter();
+            if (sorter == null) {
+                sorter = new javax.swing.table.TableRowSorter<>(tableModel);
+                table.setRowSorter(sorter);
+            }
+            if (keyword.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Vui lòng nhập từ khóa tìm kiếm!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+                sorter.setRowFilter(null);
+                return;
+            }
+            sorter.setRowFilter(javax.swing.RowFilter.regexFilter("(?i)" + keyword));
+            if (table.getRowCount() == 0) {
+                JOptionPane.showMessageDialog(this, "Không tìm thấy kết quả phù hợp!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
 
         loadData();
     }
@@ -181,18 +205,28 @@ public class FrmQuanLyBacSy extends JPanel {
         
         btnCancel.addActionListener(e -> dialog.dispose());
         btnSave.addActionListener(e -> {
-            BacSy newBs = new BacSy(txtMaSo.getText(), txtDienThoai.getText(), txtChuyenNganh.getText(), txtKyNang.getText(), txtLich.getText());
+            if (txtMaSo.getText().trim().isEmpty() || txtDienThoai.getText().trim().isEmpty() || 
+                txtChuyenNganh.getText().trim().isEmpty() || txtKyNang.getText().trim().isEmpty() || 
+                txtLich.getText().trim().isEmpty()) {
+                JOptionPane.showMessageDialog(dialog, "Vui lòng nhập đầy đủ thông tin!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            BacSy newBs = new BacSy(txtMaSo.getText().trim(), txtDienThoai.getText().trim(), txtChuyenNganh.getText().trim(), txtKyNang.getText().trim(), txtLich.getText().trim());
             if (bs == null) {
                 if (dao.insert(newBs)) {
                     JOptionPane.showMessageDialog(dialog, "Thêm thành công");
                     loadData();
                     dialog.dispose();
+                } else {
+                    JOptionPane.showMessageDialog(dialog, "Lưu thất bại! Vui lòng kiểm tra lại dữ liệu.", "Lỗi", JOptionPane.ERROR_MESSAGE);
                 }
             } else {
                 if (dao.update(newBs)) {
                     JOptionPane.showMessageDialog(dialog, "Sửa thành công");
                     loadData();
                     dialog.dispose();
+                } else {
+                    JOptionPane.showMessageDialog(dialog, "Cập nhật thất bại! Vui lòng kiểm tra lại dữ liệu.", "Lỗi", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });

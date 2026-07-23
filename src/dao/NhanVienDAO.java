@@ -67,4 +67,23 @@ public class NhanVienDAO {
         }
         return false;
     }
+
+    public boolean update(NhanVien obj) {
+        String sql = "UPDATE NhanVien SET CMND=?, GioiTinh=?, NgaySinh=?, DiaChi=?, NgayTuyenDung=?, ChucDanh=?, MaKhoa=? WHERE MaSo=?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, obj.getCmnd());
+            ps.setString(2, obj.getGioiTinh());
+            ps.setDate(3, obj.getNgaySinh() != null ? new Date(obj.getNgaySinh().getTime()) : null);
+            ps.setString(4, obj.getDiaChi());
+            ps.setDate(5, obj.getNgayTuyenDung() != null ? new Date(obj.getNgayTuyenDung().getTime()) : null);
+            ps.setString(6, obj.getChucDanh());
+            ps.setString(7, obj.getMaKhoa());
+            ps.setString(8, obj.getMaSo());
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

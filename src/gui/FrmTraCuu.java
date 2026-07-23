@@ -100,13 +100,15 @@ public class FrmTraCuu extends JPanel {
             }
         });
 
-        // Auto load initial data
-        btnSearch.doClick();
+        // Load data automatically on start
+        performSearch();
     }
     
     private void performSearch() {
         model.setRowCount(0);
-        String keyword = txtKeyword.getText().toLowerCase();
+        String keyword = txtKeyword.getText().trim().toLowerCase();
+        
+        
         String loai = cbxLoai.getSelectedItem().toString();
         
         int MAX_ROWS = 500;
@@ -183,6 +185,10 @@ public class FrmTraCuu extends JPanel {
                         rowCount++;
                     }
                 }
+            }
+            
+            if (rowCount == 0) {
+                JOptionPane.showMessageDialog(this, "Không tìm thấy kết quả phù hợp!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
             }
         } catch (Exception ex) {
             ex.printStackTrace();

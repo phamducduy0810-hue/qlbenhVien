@@ -78,28 +78,53 @@ public class FrmMain extends JFrame {
         pnlMenu.setBackground(COLOR_SIDEBAR);
         pnlMenu.setBorder(new EmptyBorder(10, 15, 10, 15));
         
+        String role = "Admin"; // Default if not logged in through proper channel
+        if (utils.SessionManager.isLoggedIn()) {
+            role = utils.SessionManager.getCurrentUser().getVaiTro();
+        }
+        lblAdmin.setText("Vai trò: " + role);
+
         SidebarItem menuTrangChu = createSidebarItem("Trang Chủ", "TrangChu");
         pnlMenu.add(menuTrangChu);
         pnlMenu.add(Box.createRigidArea(new Dimension(0, 5)));
-        pnlMenu.add(createSidebarItem("Quản Lý Nhân Viên", "QuanLyNhanVien"));
-        pnlMenu.add(Box.createRigidArea(new Dimension(0, 5)));
-        pnlMenu.add(createSidebarItem("Quản Lý Bác Sỹ", "QuanLyBacSy"));
-        pnlMenu.add(Box.createRigidArea(new Dimension(0, 5)));
-        pnlMenu.add(createSidebarItem("Quản Lý Bệnh Nhân", "QuanLyBenhNhan"));
-        pnlMenu.add(Box.createRigidArea(new Dimension(0, 5)));
-        pnlMenu.add(createSidebarItem("Quản Lý Khoa Phòng", "QuanLyKhoaPhong"));
-        pnlMenu.add(Box.createRigidArea(new Dimension(0, 5)));
-        pnlMenu.add(createSidebarItem("Quản Lý Giường Bệnh", "QuanLyGiuong"));
-        pnlMenu.add(Box.createRigidArea(new Dimension(0, 5)));
-        pnlMenu.add(createSidebarItem("Quản Lý Lần Khám", "KhamBenh"));
-        pnlMenu.add(Box.createRigidArea(new Dimension(0, 5)));
-        pnlMenu.add(createSidebarItem("Phiếu Nhập Viện", "NhapVien"));
-        pnlMenu.add(Box.createRigidArea(new Dimension(0, 5)));
-        pnlMenu.add(createSidebarItem("Bệnh Đã Phát Hiện", "BenhDaPhatHien"));
-        pnlMenu.add(Box.createRigidArea(new Dimension(0, 5)));
-        pnlMenu.add(createSidebarItem("Tra Cứu Nâng Cao", "TraCuu"));
-        pnlMenu.add(Box.createRigidArea(new Dimension(0, 5)));
-        pnlMenu.add(createSidebarItem("Báo Cáo Thống Kê", "BaoCao"));
+        
+        if ("Admin".equalsIgnoreCase(role)) {
+            pnlMenu.add(createSidebarItem("Quản Lý Nhân Viên", "QuanLyNhanVien"));
+            pnlMenu.add(Box.createRigidArea(new Dimension(0, 5)));
+            pnlMenu.add(createSidebarItem("Quản Lý Bác Sỹ", "QuanLyBacSy"));
+            pnlMenu.add(Box.createRigidArea(new Dimension(0, 5)));
+            pnlMenu.add(createSidebarItem("Quản Lý Bệnh Nhân", "QuanLyBenhNhan"));
+            pnlMenu.add(Box.createRigidArea(new Dimension(0, 5)));
+            pnlMenu.add(createSidebarItem("Quản Lý Khoa Phòng", "QuanLyKhoaPhong"));
+            pnlMenu.add(Box.createRigidArea(new Dimension(0, 5)));
+            pnlMenu.add(createSidebarItem("Quản Lý Giường Bệnh", "QuanLyGiuong"));
+            pnlMenu.add(Box.createRigidArea(new Dimension(0, 5)));
+            pnlMenu.add(createSidebarItem("Quản Lý Lần Khám", "KhamBenh"));
+            pnlMenu.add(Box.createRigidArea(new Dimension(0, 5)));
+            pnlMenu.add(createSidebarItem("Phiếu Nhập Viện", "NhapVien"));
+            pnlMenu.add(Box.createRigidArea(new Dimension(0, 5)));
+            pnlMenu.add(createSidebarItem("Bệnh Đã Phát Hiện", "BenhDaPhatHien"));
+            pnlMenu.add(Box.createRigidArea(new Dimension(0, 5)));
+            pnlMenu.add(createSidebarItem("Tra Cứu Nâng Cao", "TraCuu"));
+            pnlMenu.add(Box.createRigidArea(new Dimension(0, 5)));
+            pnlMenu.add(createSidebarItem("Báo Cáo Thống Kê", "BaoCao"));
+        } else if ("BacSy".equalsIgnoreCase(role)) {
+            pnlMenu.add(createSidebarItem("Quản Lý Bệnh Nhân", "QuanLyBenhNhan"));
+            pnlMenu.add(Box.createRigidArea(new Dimension(0, 5)));
+            pnlMenu.add(createSidebarItem("Quản Lý Lần Khám", "KhamBenh"));
+            pnlMenu.add(Box.createRigidArea(new Dimension(0, 5)));
+            pnlMenu.add(createSidebarItem("Bệnh Đã Phát Hiện", "BenhDaPhatHien"));
+        } else if ("LeTan".equalsIgnoreCase(role)) {
+            pnlMenu.add(createSidebarItem("Quản Lý Bệnh Nhân", "QuanLyBenhNhan"));
+            pnlMenu.add(Box.createRigidArea(new Dimension(0, 5)));
+            pnlMenu.add(createSidebarItem("Quản Lý Giường Bệnh", "QuanLyGiuong"));
+            pnlMenu.add(Box.createRigidArea(new Dimension(0, 5)));
+            pnlMenu.add(createSidebarItem("Quản Lý Lần Khám", "KhamBenh"));
+            pnlMenu.add(Box.createRigidArea(new Dimension(0, 5)));
+            pnlMenu.add(createSidebarItem("Phiếu Nhập Viện", "NhapVien"));
+            pnlMenu.add(Box.createRigidArea(new Dimension(0, 5)));
+            pnlMenu.add(createSidebarItem("Tra Cứu Nâng Cao", "TraCuu"));
+        }
         
         JScrollPane scrollMenu = new JScrollPane(pnlMenu);
         scrollMenu.setBorder(null);

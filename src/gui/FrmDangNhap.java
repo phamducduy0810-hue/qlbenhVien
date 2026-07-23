@@ -80,7 +80,10 @@ public class FrmDangNhap extends JFrame {
                 JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin!", "Lỗi", JOptionPane.WARNING_MESSAGE);
                 return;
             }
-            if (u.equals("admin") && p.equals("admin")) {
+            dao.TaiKhoanDAO tkDao = new dao.TaiKhoanDAO();
+            model.TaiKhoan tk = tkDao.authenticate(u, p);
+            if (tk != null) {
+                utils.SessionManager.setCurrentUser(tk);
                 this.dispose();
                 new FrmMain().setVisible(true);
             } else {

@@ -104,7 +104,31 @@ public class FrmQuanLyNhanVien extends JPanel {
             }
         });
         
-        btnLoad.addActionListener(e -> loadData());
+        btnLoad.addActionListener(e -> {
+            txtSearch.setText("");
+            if (table.getRowSorter() != null) {
+                ((javax.swing.table.TableRowSorter)table.getRowSorter()).setRowFilter(null);
+            }
+            loadData();
+        });
+        
+        btnSearch.addActionListener(e -> {
+            String keyword = txtSearch.getText().trim().toLowerCase();
+            javax.swing.table.TableRowSorter<DefaultTableModel> sorter = (javax.swing.table.TableRowSorter<DefaultTableModel>) table.getRowSorter();
+            if (sorter == null) {
+                sorter = new javax.swing.table.TableRowSorter<>(tableModel);
+                table.setRowSorter(sorter);
+            }
+            if (keyword.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Vui lòng nhập từ khóa tìm kiếm!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+                sorter.setRowFilter(null);
+                return;
+            }
+            sorter.setRowFilter(javax.swing.RowFilter.regexFilter("(?i)" + keyword));
+            if (table.getRowCount() == 0) {
+                JOptionPane.showMessageDialog(this, "Không tìm thấy kết quả phù hợp!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
         loadData();
     }
     
@@ -233,13 +257,32 @@ public class FrmQuanLyNhanVien extends JPanel {
                 java.util.Date dNgayTuyen = (java.util.Date) spnNgayTuyen.getValue();
                 String gioiTinh = radNam.isSelected() ? "Nam" : "Nữ";
                 
-                NhanVien newNv = new NhanVien(txtMaSo.getText(), txtCMND.getText(), gioiTinh,
-                    dNgaySinh, txtDiaChi.getText(), dNgayTuyen, txtChucDanh.getText(), txtMaKhoa.getText());
+                if (txtMaSo.getText().trim().isEmpty() || txtCMND.getText().trim().isEmpty() || 
+                    txtDiaChi.getText().trim().isEmpty() || txtChucDanh.getText().trim().isEmpty() || 
+                    txtMaKhoa.getText().trim().isEmpty()) {
+                    JOptionPane.showMessageDialog(dialog, "Vui lòng nhập đầy đủ thông tin!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+                
+                NhanVien newNv = new NhanVien(txtMaSo.getText().trim(), txtCMND.getText().trim(), gioiTinh,
+                    dNgaySinh, txtDiaChi.getText().trim(), dNgayTuyen, txtChucDanh.getText().trim(), txtMaKhoa.getText().trim());
                 
                 if (nv == null) {
-                    if (dao.insert(newNv)) { JOptionPane.showMessageDialog(dialog, "Thêm thành công"); loadData(); dialog.dispose(); }
+                    if (dao.insert(newNv)) {
+                        JOptionPane.showMessageDialog(dialog, "Thêm thành công");
+                        loadData();
+                        dialog.dispose();
+                    } else {
+                        JOptionPane.showMessageDialog(dialog, "Lưu thất bại! Vui lòng kiểm tra lại dữ liệu.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    }
                 } else {
-                    // Cập nhật sau
+                    if (dao.update(newNv)) {
+                        JOptionPane.showMessageDialog(dialog, "Sửa thành công");
+                        loadData();
+                        dialog.dispose();
+                    } else {
+                        JOptionPane.showMessageDialog(dialog, "Cập nhật thất bại! Vui lòng kiểm tra lại dữ liệu.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(dialog, "Lỗi khi lưu dữ liệu!");

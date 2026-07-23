@@ -104,7 +104,31 @@ public class FrmNhapVien extends JPanel {
             }
         });
         
-        btnLoad.addActionListener(e -> loadData());
+        btnLoad.addActionListener(e -> {
+            txtSearch.setText("");
+            if (table.getRowSorter() != null) {
+                ((javax.swing.table.TableRowSorter)table.getRowSorter()).setRowFilter(null);
+            }
+            loadData();
+        });
+        
+        btnSearch.addActionListener(e -> {
+            String keyword = txtSearch.getText().trim().toLowerCase();
+            javax.swing.table.TableRowSorter<DefaultTableModel> sorter = (javax.swing.table.TableRowSorter<DefaultTableModel>) table.getRowSorter();
+            if (sorter == null) {
+                sorter = new javax.swing.table.TableRowSorter<>(tableModel);
+                table.setRowSorter(sorter);
+            }
+            if (keyword.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Vui lòng nhập từ khóa tìm kiếm!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+                sorter.setRowFilter(null);
+                return;
+            }
+            sorter.setRowFilter(javax.swing.RowFilter.regexFilter("(?i)" + keyword));
+            if (table.getRowCount() == 0) {
+                JOptionPane.showMessageDialog(this, "Không tìm thấy kết quả phù hợp!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
         loadData();
     }
     

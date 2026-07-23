@@ -42,12 +42,24 @@ public class FrmQuanLyBenhNhan extends JPanel {
         JButton btnExcel = createToolButton("📊 Xuất Excel");
         JButton btnLoad = createToolButton("🔄 Làm mới");
         
-        pnlActions.add(btnAdd);
         pnlActions.add(btnUpdate);
-        pnlActions.add(btnDelete);
         pnlActions.add(btnView);
         pnlActions.add(btnExcel);
         pnlActions.add(btnLoad);
+        
+        String role = "Admin";
+        if (utils.SessionManager.isLoggedIn()) {
+            role = utils.SessionManager.getCurrentUser().getVaiTro();
+        }
+        
+        if ("Admin".equalsIgnoreCase(role)) {
+            pnlActions.add(btnAdd, 0); // Thêm vào đầu
+            pnlActions.add(btnDelete, 2);
+        } else if ("LeTan".equalsIgnoreCase(role)) {
+            pnlActions.add(btnAdd, 0);
+        } else if ("BacSy".equalsIgnoreCase(role)) {
+            // Chỉ cập nhật (Sửa), không thêm không xóa
+        }
 
         JPanel pnlSearch = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
         pnlSearch.setOpaque(false);
@@ -118,7 +130,31 @@ public class FrmQuanLyBenhNhan extends JPanel {
             }
         });
         
-        btnLoad.addActionListener(e -> loadData());
+        btnLoad.addActionListener(e -> {
+            txtSearch.setText("");
+            if (table.getRowSorter() != null) {
+                ((javax.swing.table.TableRowSorter)table.getRowSorter()).setRowFilter(null);
+            }
+            loadData();
+        });
+        
+        btnSearch.addActionListener(e -> {
+            String keyword = txtSearch.getText().trim().toLowerCase();
+            javax.swing.table.TableRowSorter<DefaultTableModel> sorter = (javax.swing.table.TableRowSorter<DefaultTableModel>) table.getRowSorter();
+            if (sorter == null) {
+                sorter = new javax.swing.table.TableRowSorter<>(tableModel);
+                table.setRowSorter(sorter);
+            }
+            if (keyword.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Vui lòng nhập từ khóa tìm kiếm!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+                sorter.setRowFilter(null);
+                return;
+            }
+            sorter.setRowFilter(javax.swing.RowFilter.regexFilter("(?i)" + keyword));
+            if (table.getRowCount() == 0) {
+                JOptionPane.showMessageDialog(this, "Không tìm thấy kết quả phù hợp!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
 
         loadData();
     }
@@ -134,7 +170,17 @@ public class FrmQuanLyBenhNhan extends JPanel {
 
     private void loadData() {
         tableModel.setRowCount(0);
+        String currentUserRole = "";
+        String currentBacSyId = "";
+        if (utils.SessionManager.isLoggedIn()) {
+            currentUserRole = utils.SessionManager.getCurrentUser().getVaiTro();
+            currentBacSyId = utils.SessionManager.getCurrentUser().getMaBacSy();
+        }
+
         for (BenhNhan bn : dao.getAll()) {
+            // Hiển thị tất cả bệnh nhân cho mọi vai trò (kể cả Bác sỹ)
+
+            
             tableModel.addRow(new Object[]{
                 bn.getMaSo(), bn.getCmnd(), bn.getGioiTinh(),
                 bn.getNgaySinh() != null ? sdf.format(bn.getNgaySinh()) : "",
@@ -224,20 +270,29 @@ public class FrmQuanLyBenhNhan extends JPanel {
                 String gioiTinh = radNam.isSelected() ? "Nam" : "Nữ";
                 java.util.Date ngaySinh = (java.util.Date) spnNgaySinh.getValue();
                 java.util.Date ngayDangKy = (java.util.Date) spnNgayDangKy.getValue();
-                BenhNhan newBn = new BenhNhan(txtMaSo.getText(), txtCMND.getText(), gioiTinh,
-                    ngaySinh, txtDiaChi.getText(), ngayDangKy, txtMaBacSy.getText());
+                if (txtMaSo.getText().trim().isEmpty() || txtCMND.getText().trim().isEmpty() || 
+                    txtDiaChi.getText().trim().isEmpty() || txtMaBacSy.getText().trim().isEmpty()) {
+                    JOptionPane.showMessageDialog(dialog, "Vui lòng nhập đầy đủ thông tin!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+                BenhNhan newBn = new BenhNhan(txtMaSo.getText().trim(), txtCMND.getText().trim(), gioiTinh,
+                    ngaySinh, txtDiaChi.getText().trim(), ngayDangKy, txtMaBacSy.getText().trim());
                 
                 if (bn == null) {
                     if (dao.insert(newBn)) {
                         JOptionPane.showMessageDialog(dialog, "Thêm thành công");
                         loadData();
                         dialog.dispose();
+                    } else {
+                        JOptionPane.showMessageDialog(dialog, "Lưu thất bại! Vui lòng kiểm tra lại dữ liệu (Mã BN trùng, Mã Bác Sỹ không tồn tại,...)", "Lỗi", JOptionPane.ERROR_MESSAGE);
                     }
                 } else {
                     if (dao.update(newBn)) {
                         JOptionPane.showMessageDialog(dialog, "Sửa thành công");
                         loadData();
                         dialog.dispose();
+                    } else {
+                        JOptionPane.showMessageDialog(dialog, "Cập nhật thất bại! Vui lòng kiểm tra lại dữ liệu.", "Lỗi", JOptionPane.ERROR_MESSAGE);
                     }
                 }
             } catch (Exception ex) {
